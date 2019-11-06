@@ -50,9 +50,6 @@ library(semPlot)
 library(tidyverse)
 
 #load data
-getwd() 
-
-setwd("/Users/chen/Desktop/Dissertation Analysis - GTA Anxiety/1- Fall 2016")
 
 data <- read.csv("1 Fall 2016 GTA Teaching Anxiety and Coping Survey copy.csv", header=TRUE) #for Macbook Air
 
@@ -68,13 +65,13 @@ colnames(data)
 which(colnames(data)=="Q18_10") #checking which column names are linked to which column number
 cols = data[,c(39,42,44:45,47:48,51:52,55,58,60,62:63,66)] #choosing the columns which need to be reverse scored
 cols = c("Q18_1", "Q18_4", "Q18_6", "Q18_7", "Q18_9", "Q18_10", "Q19_13", "Q19_14", "Q19_17", "Q19_20", "Q20_22", "Q20_24", "Q20_25","Q20_28")
-data[ ,cols] = 6 - data[ ,cols] # subract by the 
+data[ ,cols] = 6 - data[ ,cols] # subract by the max number of likert scales (1-5 in this case) 
 cols = data[,c(39,42,44:45,47:48,51:52,55,58,60,62:63,66)] #check after scoring to ensure they are reversed scored
 
 data["AnxietyScore"] <- NA # That creates the new column named "MY_NEW_COLUMN" filled with "NA"
 data$AnxietyScore <- rowSums(data[,39:67], na.rm=T)  # As an example, the new column receives the result of C - D
 
-### Draft functions for anxiety filtering numeric, NOT blank, survey data###
+### Draft functions for anxiety filtering numeric, less than 5 columns blank, survey data###
 
 teach_anxiety <- function(x, index.1, index.2) {
   
@@ -83,12 +80,12 @@ teach_anxiety <- function(x, index.1, index.2) {
   
   # test whether x is logical 
   if(is.data.frame(x) == F) {
-    warning("This is not a data frame ") #pass a message when it's okay, warning if something is wrong
+    warning("This is not a data frame.") #pass a message when it's okay, warning if something is wrong
     new_x <- NA
   } 
   
   if(is.numeric(col1) == F & (is.numeric(col2) == F)) {
-    warning("Columns are not numeric ") #pass a message when it's okay, warning if something is wrong
+    warning("Columns are not numeric.") #pass a message when it's okay, warning if something is wrong
     new_x <- NA 
     
   } else {
@@ -100,9 +97,18 @@ teach_anxiety <- function(x, index.1, index.2) {
 } 
 
 # need to use 
-read.csv()
+test <- read.csv("test.xlsx")  # to test if it's a csv file?
 
-is.blank()
+if(read.csv("test.xlsx") == F) {
+  warning("Columns are not numeric.") #pass a message when it's okay, warning if something is wrong
+  new_x <- NA 
+} else {
+  
+} )
+?read.csv
+
+is.na() # to test if it's blank?
+
 
 
 
