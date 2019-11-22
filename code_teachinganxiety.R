@@ -37,6 +37,7 @@ library(ade4)
 library(vioplot)
 library(lsr)
 library(plyr)
+library(dplyr)
 
 library(lavaan)
 library(psych)
@@ -51,7 +52,9 @@ library(tidyverse)
 
 #load data
 
-data <- read.csv("1 Fall 2016 GTA Teaching Anxiety and Coping Survey copy.csv", header=TRUE) #for Macbook Air
+rm(list = ls(all.names = TRUE)) 
+
+data_practice <- read.csv("test_data.csv", header=TRUE) #for Macbook Air
 
 str(data) #check types of data
 class(data)
@@ -60,16 +63,53 @@ head(data)
 colnames(data)
 #did blanks become zero??
 
-#Anxiety
-#reverse scoring
-which(colnames(data)=="Q18_10") #checking which column names are linked to which column number
-cols = data[,c(39,42,44:45,47:48,51:52,55,58,60,62:63,66)] #choosing the columns which need to be reverse scored
-cols = c("Q18_1", "Q18_4", "Q18_6", "Q18_7", "Q18_9", "Q18_10", "Q19_13", "Q19_14", "Q19_17", "Q19_20", "Q20_22", "Q20_24", "Q20_25","Q20_28")
-data[ ,cols] = 6 - data[ ,cols] # subract by the max number of likert scales (1-5 in this case) 
-cols = data[,c(39,42,44:45,47:48,51:52,55,58,60,62:63,66)] #check after scoring to ensure they are reversed scored
+# If the read.csv gives and error, let me know. Need to go back into data file to SAVE it as a .csv file first 
 
-data["AnxietyScore"] <- NA # That creates the new column named "MY_NEW_COLUMN" filled with "NA"
-data$AnxietyScore <- rowSums(data[,39:67], na.rm=T)  # As an example, the new column receives the result of C - D
+## Make sure your save your data as a .csv file 
+
+teach_anxiety <- function(x) {
+  # test whether x is logical 
+  if(is.data.frame(x) == F) {
+    warning("This is not a data frame") #pass a message when it's okay, warning if something is wrong
+  }
+  
+  # if(is.numeric(x) ==  T){
+  #    warning("These variables are not numeric") #pass a message when it's okay, warning if something is wrong
+  #  }
+  
+  else {
+    
+    reversed_x <- x %>%
+      mutate(Q1 = 6 - Q1,
+             Q4 = 6 - Q4,
+             Q6 = 6 - Q6,
+             Q7 = 6 - Q7,
+             Q9 = 6 - Q9,
+             Q10 = 6 - Q10,
+             Q13 = 6 - Q13,
+             Q14 = 6 - Q14,
+             Q17 = 6 - Q17,
+             Q20 = 6 - Q20,
+             Q22 = 6 - Q22,
+             Q24 = 6 - Q24,
+             Q25 = 6 - Q25,
+             Q28 = 6 - Q28)
+    
+    
+    reversed_x["AnxietyScore"] <- NA # That creates the new column named "MY_NEW_COLUMN" filled with "NA"
+    reversed_x$AnxietyScore <- rowSums(reversed_x[ , c("Q1", "Q2", "Q3", "Q4","Q5","Q6","Q7","Q8","Q9",
+                                                       "Q10", "Q11", "Q12", "Q13", "Q14", "Q15", "Q16", 
+                                                       "Q17", "Q18", "Q19", "Q20", "Q21", "Q22","Q23",
+                                                       "Q24", "Q25", "Q26","Q27","Q28","Q29")], na.rm=T)  # As an example, the new column receives the result of C - D
+    
+  }
+  
+  print(reversed_x)
+}
+
+teach_anxiety(data_practice)
+
+
 
 ### Draft functions for anxiety filtering numeric, less than 5 columns blank, survey data###
 
@@ -104,12 +144,45 @@ if(read.csv("test.xlsx") == F) {
   new_x <- NA 
 } else {
   
-} )
+} 
 ?read.csv
 
 is.na() # to test if it's blank?
 
 
+### test with practice code ###
 
+# Create a vector of Excel files to read
+files.to.read = list.files(pattern="xlsx")
+
+# Read each file and write it to csv
+lapply(files.to.read, function(f) {
+  df = read.xlsx(f, sheet=1)
+  write.csv(df, gsub("xlsx", "csv", f), row.names=FALSE)
+})
+
+??read.xlsx()
+
+install.packages("xlsx")
+library(xlsx)
+
+
+#If the is.numeric gives me an error, let me know. 
+?sapply()
+is.numeric(data_practice[, 1:22])
+apply(data_practice, 1, mean)
+sapply(data_practice, class)
+tapply(data_practice$Participant, is.numeric)
+col.types <- vapply(data_practice, class, "Q1")
+col.types <- is.mu
+is.numeric(col.types)
+is.character(col.types)
+is.data.frame(data_practice[, 1:22])
+
+col.types <- data_practice[, 1:22]
+
+class(data_practice[, 1:22])
+is.integer(col.types)
+class(cols)
 
 
